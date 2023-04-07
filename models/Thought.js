@@ -12,7 +12,7 @@ const thoughtSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: value => value.toDateString()
+            get: value => value.toDateString() // JSON should be human readable, but in Compass should still be unix
         },
         username: {
             type: String,
