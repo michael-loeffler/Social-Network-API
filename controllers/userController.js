@@ -4,24 +4,16 @@ const { User, Thought } = require('../models');
 module.exports = {
     getUsers(req, res) {
         User.find()
-            .then(async (users) => {
-                const userObj = {
-                    users,
-                    // headCount: await headCount(),
-                };
-                return res.json(userObj);
-            })
-            .catch((err) => {
-                console.log(err);
-                return res.status(500).json(err);
-            });
+            .select('-__v')
+            .then((users) => res.json(users))
+            .catch((err) => res.status(500).json(err));
     },
     getSingleUser(req, res) {
         User.findOne({ _id: req.params.userId })
             .select('-__v')
             .then(async (user) =>
                 !user
-                    ? res.status(404).json({ message: 'No user with that ID' })
+                    ? res.status(404).json({ message: 'No user found with that ID' })
                     : res.json({
                         user,
                         //   grade: await grade(req.params.studentId),
@@ -47,7 +39,7 @@ module.exports = {
                 !user
                     ? res
                         .status(404)
-                        .json({ message: 'No user found with that ID :(' })
+                        .json({ message: 'No user found with that ID' })
                     : res.json(user));
     },
     // Delete a user
@@ -55,7 +47,7 @@ module.exports = {
         User.findOneAndRemove({ _id: req.params.userId })
             .then((user) => // res.json({ message: 'user successfully deleted' }))
                 !user
-                  ? res.status(404).json({ message: 'No such user exists' })
+                  ? res.status(404).json({ message: 'No user found with that ID' })
                   : Thought.deleteMany(
                       { username: user.username },
                       { new: true }
@@ -64,9 +56,9 @@ module.exports = {
               .then((thought) =>
                 !thought
                   ? res.status(404).json({
-                      message: 'user deleted, but no thoughts found',
+                      message: 'User deleted, but no thoughts found',
                     })
-                  : res.json({ message: 'user successfully deleted' })
+                  : res.json({ message: 'User and associated thoughts successfully deleted' })
               )
             .catch((err) => {
                 console.log(err);
@@ -76,14 +68,14 @@ module.exports = {
     addFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $addToSet: { friends: req.body } },
+            { $addToSet: { friends: req.params.friendId} },
             { new: true }
         )
             .then((user) =>
                 !user
                     ? res
                         .status(404)
-                        .json({ message: 'No user found with that ID :(' })
+                        .json({ message: 'No user found with that ID' })
                     : res.json(user)
             )
             .catch((err) => res.status(500).json(err));
@@ -91,14 +83,14 @@ module.exports = {
     deleteFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $pull: { friends: { userId: req.params.friendId } } },
+            { $pull: { friends: req.params.friendId } },
             { new: true }
         )
             .then((user) =>
                 !user
                     ? res
                         .status(404)
-                        .json({ message: 'No user found with that ID :(' })
+                        .json({ message: 'No user found with that ID' })
                     : res.json(user)
             )
             .catch((err) => res.status(500).json(err));
