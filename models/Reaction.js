@@ -1,8 +1,9 @@
 const { Schema, Types } = require('mongoose');
+const dayjs = require('dayjs')
 
 const reactionSchema = new Schema(
     {
-        reactionId: {
+        reactionId: { //getting two ID fields when creating a reaction
             type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId(),
         },
@@ -17,14 +18,15 @@ const reactionSchema = new Schema(
         },
         createdAt: {
             type: Date,
-            default: Date.now,
-            get: value => value.toDateString()
+            default: dayjs(),
+            get: value => dayjs(value).format('h:mma [on] dddd, MMMM D, YYYY')
         },
     },
     {
         toJSON: {
             getters: true
-        }
+        },
+        id: false
     }
 );
 

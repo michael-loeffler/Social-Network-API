@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
+const dayjs = require('dayjs')
 
 const thoughtSchema = new Schema(
     {
@@ -11,8 +12,8 @@ const thoughtSchema = new Schema(
         },
         createdAt: {
             type: Date,
-            default: Date.now,
-            get: value => value.toDateString() // JSON should be human readable, but in Compass should still be unix
+            default: dayjs(),
+            get: value => dayjs(value).format('h:mma [on] dddd, MMMM D, YYYY') // JSON should be human readable, but in Compass should still be unix
         },
         username: {
             type: String,
@@ -24,7 +25,8 @@ const thoughtSchema = new Schema(
     {
         toJSON: {
             getters: true,
-        }
+        },
+        id: false
     }
 );
 
