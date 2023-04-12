@@ -3,12 +3,6 @@ const {
   getThoughts,
   getSingleThought,
   createThought,
-   // // example data
-      // {
-      //   "thoughtText": "Here's a cool thought...",
-      //   "username": "lernantino",
-      //   "userId": "5edff358a0fcb779aa7b118b"
-      // }
   updateThought,
   deleteThought,
   addReaction,

@@ -13,7 +13,7 @@ const thoughtSchema = new Schema(
         createdAt: {
             type: Date,
             default: dayjs(),
-            get: value => dayjs(value).format('h:mma [on] dddd, MMMM D, YYYY') // JSON should be human readable, but in Compass should still be unix
+            get: value => dayjs(value).format('h:mma [on] dddd, MMMM D, YYYY') // JSON response will be human-readable, but in Compass, date will still be in format unix
         },
         username: {
             type: String,

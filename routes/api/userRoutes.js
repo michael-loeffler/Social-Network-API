@@ -3,11 +3,6 @@ const {
   getUsers,
   getSingleUser,
   createUser,
-  // example data
-    // {
-    //   "username": "lernantino",
-    //   "email": "lernantino@gmail.com"
-    // }
   updateUser,
   deleteUser,
   addFriend,
