@@ -3,7 +3,7 @@ const dayjs = require('dayjs')
 
 const reactionSchema = new Schema(
     {
-        reactionId: { //getting two ID fields when creating a reaction
+        reactionId: {
             type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId(),
         },
