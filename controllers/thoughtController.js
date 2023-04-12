@@ -1,17 +1,16 @@
 const { ObjectId } = require('mongoose').Types;
 const { User, Thought } = require('../models');
-const dayjs = require('dayjs')
 
 module.exports = {
     getThoughts(req, res) {
         Thought.find()
-            .select('-__v -reactions._id -reactions.reactionId')
+            .select('-__v -reactions._id')
             .then((thoughts) => res.json(thoughts))
             .catch((err) => res.status(500).json(err));
     },
     getSingleThought(req, res) {
         Thought.findOne({ _id: req.params.thoughtId })
-            .select('-__v')
+            .select('-__v -reactions._id')
             .then((thought) =>
                 !thought
                     ? res.status(404).json({ message: 'No thought found with that ID' })
@@ -26,8 +25,8 @@ module.exports = {
         Thought.create(req.body)
             .then((thought) => {
                 console.log(thought);
-                return User.findOneAndUpdate(
-                    { username: thought.username },
+                return User.findOneAndUpdate( // once a thought is created, that thoughtId is added to the user's 'thoughts' array
+                    { username: thought.username }, // only username is provided in a thought's schema so need to look up user by username instead of a user's _id
                     { $addToSet: { thoughts: thought._id } },
                     { new: true }
                 )
@@ -60,7 +59,7 @@ module.exports = {
             .then((thought) =>
                 !thought
                     ? res.status(404).json({ message: 'No thought found with that ID' })
-                    : User.findOneAndUpdate(
+                    : User.findOneAndUpdate( // when a thought is deleted, we remove that thoughtId from the user's 'thoughts' array
                         { username: thought.username },
                         { $pull: { thoughts: thought._id } },
                         { new: true }
@@ -90,10 +89,9 @@ module.exports = {
             .catch((err) => res.status(500).json(err));
     },
     deleteReaction(req, res) {
-        console.log('delete route!')
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { reactions: {reactionId: req.params.reactionId} } },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { new: true }
         )
             .then((thought) =>

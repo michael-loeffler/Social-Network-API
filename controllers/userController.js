@@ -4,16 +4,16 @@ const { User, Thought } = require('../models');
 module.exports = {
     getUsers(req, res) {
         User.find()
-            .populate({ path: 'thoughts', select: '-__v -_id' })
-            .populate({ path: 'friends', select: '-__v -_id -thoughts' })
+            .populate({ path: 'thoughts', select: '-__v -_id' }) // pulls in thought data instead of only showing thoughtId in the thoughts array
+            .populate({ path: 'friends', select: '-__v -_id -thoughts' }) // pulls in friend data instead of only showing friendId in the friends array
             .select('-__v')
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err));
     },
     getSingleUser(req, res) {
         User.findOne({ _id: req.params.userId })
-            .populate({ path: 'thoughts', select: '-__v -_id' })
-            .populate({ path: 'friends', select: '-__v -_id -thoughts' })
+            .populate({ path: 'thoughts', select: '-__v -_id' }) // pulls in thought data instead of only showing thoughtId in the thoughts array
+            .populate({ path: 'friends', select: '-__v -_id -thoughts' }) // pulls in friend data instead of only showing friendId in the friends array
             .select('-__v')
             .then((user) =>
                 !user
@@ -47,10 +47,10 @@ module.exports = {
     },
     deleteUser(req, res) {
         User.findOneAndRemove({ _id: req.params.userId })
-            .then((user) => 
+            .then((user) =>
                 !user
                     ? res.status(404).json({ message: 'No user found with that ID' })
-                    : Thought.deleteMany(
+                    : Thought.deleteMany( // when a user is deleted, we also delete all of that user's thoughts
                         { username: user.username },
                         { new: true }
                     )
