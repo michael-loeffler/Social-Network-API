@@ -48,7 +48,7 @@ The Social Network API project functions as a command-line application. After fo
 
 ## Video Demonstration
 
-Please review the [demonstration video](https://drive.google.com/file/d/1s9C0J5U4Zaa1ejMTVhTg4p7wSvJ-G_zW/view) to see how the app functions.   
+Please review the [demonstration video](https://drive.google.com/file/d/1NLW6204mswgokpV0Pn1CKKZ3e0Gx9fMp/view) to see how the app functions.   
 
 ## Credits
 

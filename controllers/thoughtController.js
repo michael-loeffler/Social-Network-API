@@ -24,7 +24,6 @@ module.exports = {
     createThought(req, res) {
         Thought.create(req.body)
             .then((thought) => {
-                console.log(thought);
                 return User.findOneAndUpdate( // once a thought is created, that thoughtId is added to the user's 'thoughts' array
                     { username: thought.username }, // only username is provided in a thought's schema so need to look up user by username instead of a user's _id
                     { $addToSet: { thoughts: thought._id } },
